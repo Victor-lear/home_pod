@@ -11,7 +11,7 @@ app = Flask(__name__)
 # --- 請在此填入你的憑證 ---
 # 從 LINE Developers Console 取得
 LINE_CHANNEL_ACCESS_TOKEN = os.getenv('LINE_CHANNEL_ACCESS_TOKEN') 
-LINE_CHANNEL_SECRET = os.getenv('LINE_CHANNEL_ACCESS_TOKEN') 
+LINE_CHANNEL_SECRET = os.getenv('LINE_CHANNEL_SECRET') 
 
 line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)
