@@ -26,6 +26,7 @@ def callback():
         
     except InvalidSignatureError:
         abort(400)
+    return {'message':'sucess'}
 
 @handler.add(MessageEvent, message=TextMessageContent)
 def handle_message(event):
