@@ -32,11 +32,12 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessageContent)
 def handle_message(event):
+    # 在這裡加一行最簡單的 print 測試
+    print(">>> 進入了 handle_message 函式 <<<", flush=True)
+    
     user_id = event.source.user_id
-    user_text = event.message.text.strip()
-
-    print(f"收到來自 {user_id} 的訊息: {user_text}")
-
+    user_text = event.message.text
+    print(f"收到來自 {user_id} 的訊息: {user_text}", flush=True)
 if __name__ == "__main__":
     # Flask 預設跑在 5000 埠
     app.run(port=5000)
