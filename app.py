@@ -91,12 +91,13 @@ def handle_message(event):
                 dht11 = Adafruit_DHT.DHT11
                 DHT_PIN = 22
                 h, t = Adafruit_DHT.read_retry(dht11, DHT_PIN)
+                msg_text = f"當前環境狀態：\n濕度: {h:.1f}%\n溫度: {t:.1f}°C"
                 with ApiClient(configuration) as api_client:
                     line_bot_api = MessagingApi(api_client)
                     line_bot_api.reply_message_with_http_info(
                         ReplyMessageRequest(
                             reply_token=reply_token,
-                            messages=[TextMessage(text=h)]
+                            messages=[TextMessage(text=msg_text)]
                         )
                     )
 if __name__ == "__main__":
