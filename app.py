@@ -29,7 +29,7 @@ app = Flask(__name__)
 
 # --- 請在此填入你的憑證 ---
 # 從 LINE Developers Console 取得
-configuration = Configuration(LINE_CHANNEL_ACCESS_TOKEN = os.getenv('LINE_CHANNEL_ACCESS_TOKEN') )
+configuration = Configuration(access_token = os.getenv('LINE_CHANNEL_ACCESS_TOKEN') )
 LINE_CHANNEL_ACCESS_TOKEN = os.getenv('LINE_CHANNEL_ACCESS_TOKEN') 
 LINE_CHANNEL_SECRET = os.getenv('LINE_CHANNEL_SECRET') 
 
