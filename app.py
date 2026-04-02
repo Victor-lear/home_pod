@@ -12,7 +12,15 @@ import os
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
-from linebot.v3.webhook import WebhookHandler
+from linebot.v3 import WebhookHandler
+from linebot.v3.exceptions import InvalidSignatureError
+from linebot.v3.messaging import (
+    Configuration,
+    ApiClient,
+    MessagingApi,
+    ReplyMessageRequest,
+    TextMessage
+)
 from linebot.v3.webhooks import MessageEvent, TextMessageContent
 from dotenv import load_dotenv
 ENV = './.env' 
@@ -21,6 +29,7 @@ app = Flask(__name__)
 
 # --- 請在此填入你的憑證 ---
 # 從 LINE Developers Console 取得
+configuration = Configuration(LINE_CHANNEL_ACCESS_TOKEN = os.getenv('LINE_CHANNEL_ACCESS_TOKEN') )
 LINE_CHANNEL_ACCESS_TOKEN = os.getenv('LINE_CHANNEL_ACCESS_TOKEN') 
 LINE_CHANNEL_SECRET = os.getenv('LINE_CHANNEL_SECRET') 
 
@@ -48,7 +57,7 @@ def callback():
 # 這是第二道關卡：注意參數的寫法
 @handler.add(MessageEvent, message=TextMessageContent)
 def handle_message(event):
-    print(">>> 進入了 handle_message 函式 <<<", flush=True)
+    reply_token = event.reply_token
     
     user_id = event.source.user_id
     # v3 版獲取文字的方式
@@ -76,6 +85,20 @@ def handle_message(event):
                     gpio.socketsub()
                 except:
                     pass
+            if user_text=='temp':
+                import Adafruit_DHT
+                
+                dht11 = Adafruit_DHT.DHT11
+                DHT_PIN = 22
+                h, t = Adafruit_DHT.read_retry(dht11, DHT_PIN)
+                with ApiClient(configuration) as api_client:
+                    line_bot_api = MessagingApi(api_client)
+                    line_bot_api.reply_message_with_http_info(
+                        ReplyMessageRequest(
+                            reply_token=reply_token,
+                            messages=[TextMessage(text=h)]
+                        )
+                    )
 if __name__ == "__main__":
     # Flask 預設跑在 5000 埠
     app.run(port=5000)
