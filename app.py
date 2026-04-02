@@ -3,6 +3,7 @@ import os
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from linebot.v3.webhooks import (MessageEvent,TextMessageContent)
 from dotenv import load_dotenv
 ENV = './.env' 
 load_dotenv(dotenv_path=ENV)
@@ -29,19 +30,12 @@ def callback():
         abort(400)
     return 'OK'
 
-# 當收到「文字訊息」時觸發
-@handler.add(MessageEvent, message=TextMessage)
+@handler.add(MessageEvent, message=TextMessageContent)
 def handle_message(event):
-    user_msg = event.message.text
-    print(f"收到訊息: {user_msg}")
-    
-    # 這裡可以根據 user_msg 決定要呼叫什麼 API
-    # 範例：簡單回傳
-    reply = f"你說了：{user_msg}"
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=reply)
-    )
+    user_id = event.source.user_id
+    user_text = event.message.text.strip()
+
+    print(f"收到來自 {user_id} 的訊息: {user_text}")
 
 if __name__ == "__main__":
     # Flask 預設跑在 5000 埠
