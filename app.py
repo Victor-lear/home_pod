@@ -3,7 +3,8 @@ import os
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
-from linebot.v3.webhooks import (MessageEvent,TextMessageContent)
+from linebot.v3.webhook import WebhookHandler
+from linebot.v3.webhooks import MessageEvent, TextMessageContent
 from dotenv import load_dotenv
 ENV = './.env' 
 load_dotenv(dotenv_path=ENV)
