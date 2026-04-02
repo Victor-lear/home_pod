@@ -18,24 +18,34 @@ line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)
 @app.route("/callback", methods=['POST'])
 def callback():
-    signature = request.headers['X-Line-Signature']
+    signature = request.headers.get('X-Line-Signature', '')
     body = request.get_data(as_text=True)
-
+    
+    # 這是第一道關卡：看有沒有收到資料
+    print("--- 收到 Webhook 請求 ---", flush=True)
+    
     try:
         handler.handle(body, signature)
-        
     except InvalidSignatureError:
+        print("!!! 簽章驗證失敗 !!!", flush=True)
         abort(400)
-    return {'message':'sucess'}
+    except Exception as e:
+        print(f"!!! 發生錯誤: {e} !!!", flush=True)
+        abort(500)
 
+    return 'OK'
+
+# 這是第二道關卡：注意參數的寫法
 @handler.add(MessageEvent, message=TextMessageContent)
 def handle_message(event):
-    # 在這裡加一行最簡單的 print 測試
     print(">>> 進入了 handle_message 函式 <<<", flush=True)
     
     user_id = event.source.user_id
+    # v3 版獲取文字的方式
     user_text = event.message.text
-    print(f"收到來自 {user_id} 的訊息: {user_text}", flush=True)
+    
+    print(f"發言者 ID: {user_id}", flush=True)
+    print(f"文字內容: {user_text}", flush=True)
 if __name__ == "__main__":
     # Flask 預設跑在 5000 埠
     app.run(port=5000)
